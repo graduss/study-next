@@ -1,11 +1,53 @@
 import { PrismaClient } from "@prisma/client";
+import {
+  Revenue,
+  LatestInvoice,
+  InvoiceStatus
+} from './definitions';
+import { formatCurrency } from "./utils";
 
 const prisma = new PrismaClient();
 
-export async function fetchLatestInvoices() {
+export async function fetchRevenue(): Promise<Revenue[]> {
+  return prisma.revenue.findMany({
+    select: { revenue:true, month: true }
+  });
+}
+
+export async function fetchLatestInvoices():Promise<LatestInvoice[]> {
   return prisma.invoices.findMany({
     select: {
-      customer_id: true
-    }
+      id: true,
+      amount: true,
+      customer: {
+        select: { name: true, email: true, image_url: true }
+      }
+    },
+    orderBy: { date: 'desc' },
+    take: 6
   })
+}
+
+export async function fetchCardData() {
+  const invoiceCount = await prisma.invoices.count();
+  const customerCount = await prisma.customers.count();
+
+  const paidInvoice = await prisma.invoices.aggregate({
+    _sum: { amount: true },
+    where: { status: InvoiceStatus.PAID }
+  })
+  .then(({_sum}) => formatCurrency(_sum.amount ?? 0));
+
+  const pendingInvoice = await prisma.invoices.aggregate({
+    _sum: { amount: true },
+    where: { status: InvoiceStatus.PENDING }
+  })
+  .then(({_sum}) => formatCurrency(_sum.amount ?? 0));
+
+  return {
+    invoiceCount,
+    customerCount,
+    paidInvoice,
+    pendingInvoice,
+  }
 }
