@@ -31,6 +31,32 @@ export async function fetchLatestInvoices():Promise<LatestInvoice[]> {
   })
 }
 
+const PAGE_SIZE = 6;
+
+export async function fetchFilteredInvoices(query: string = '', currentPage: number = 1) {
+  return prisma.invoices.findMany({
+    select: {
+      id: true,
+      amount: true,
+      date: true,
+      status: true,
+      customer: {
+        select: { name:true, image_url:true, email:true }
+      }
+    },
+    where: {
+      customer: {
+        OR: [
+          { name: { contains: query } },
+          { email: { contains: query } }
+        ]
+      }
+    },
+    take: PAGE_SIZE,
+    skip: (currentPage - 1) * PAGE_SIZE
+  });
+}
+
 export async function fetchCardData() {
   const invoiceCount = await prisma.invoices.count();
   const customerCount = await prisma.customers.count();
