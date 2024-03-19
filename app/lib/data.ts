@@ -9,12 +9,15 @@ import { formatCurrency } from "./utils";
 const prisma = new PrismaClient();
 
 export async function fetchRevenue(): Promise<Revenue[]> {
+  await new Promise((res) => setTimeout(res, 3000));
   return prisma.revenue.findMany({
     select: { revenue:true, month: true }
   });
 }
 
 export async function fetchLatestInvoices():Promise<LatestInvoice[]> {
+  await new Promise((res) => setTimeout(res, 1000));
+
   return prisma.invoices.findMany({
     select: {
       id: true,
@@ -43,6 +46,8 @@ export async function fetchCardData() {
     where: { status: InvoiceStatus.PENDING }
   })
   .then(({_sum}) => formatCurrency(_sum.amount ?? 0));
+
+  await new Promise((res) => setTimeout(res, 5000));
 
   return {
     invoiceCount,
