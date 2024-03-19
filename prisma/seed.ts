@@ -42,10 +42,17 @@ async function seedCustomers(client:PrismaClient) {
   }
 }
 
+async function seedRevenue(client:PrismaClient) {
+  return Promise.all(
+    revenue.map(async (rev) => client.revenue.create({ data: { ...rev } }))
+  )
+}
+
 async function main() {
   await seedUsers(prisma);
-  await seedInvoices(prisma);
   await seedCustomers(prisma);
+  await seedInvoices(prisma);
+  await seedRevenue(prisma);
 }
 
 main();

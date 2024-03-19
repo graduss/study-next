@@ -7,6 +7,9 @@
     "prettier:check": "prettier --check --ignore-unknown .",
     "start": "next start"
   },
+  "prisma": {
+    "seed": "npx ts-node prisma/seed.ts"
+  },
   "dependencies": {
     "@heroicons/react": "^2.0.18",
     "@prisma/client": "^5.11.0",
