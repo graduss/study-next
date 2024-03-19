@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE "Invoices" ALTER COLUMN "date" SET DATA TYPE DATE;
