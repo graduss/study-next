@@ -32,6 +32,16 @@ export async function fetchLatestInvoices():Promise<LatestInvoice[]> {
 }
 
 const PAGE_SIZE = 6;
+const whereByQuery = (query: string) => ({
+  where: {
+    customer: {
+      OR: [
+        { name: { contains: query } },
+        { email: { contains: query } }
+      ]
+    }
+  }
+})
 
 export async function fetchFilteredInvoices(query: string = '', currentPage: number = 1) {
   return prisma.invoices.findMany({
@@ -44,17 +54,18 @@ export async function fetchFilteredInvoices(query: string = '', currentPage: num
         select: { name:true, image_url:true, email:true }
       }
     },
-    where: {
-      customer: {
-        OR: [
-          { name: { contains: query } },
-          { email: { contains: query } }
-        ]
-      }
-    },
+    ...whereByQuery(query),
     take: PAGE_SIZE,
     skip: (currentPage - 1) * PAGE_SIZE
   });
+}
+
+export async function fetchInvoicesPages(query: string) {
+  await new Promise((res) => setTimeout(res, 2000));
+  return prisma.invoices.count({
+    ...whereByQuery(query)
+  })
+  .then((count) => Math.ceil(count / PAGE_SIZE));
 }
 
 export async function fetchCardData() {
@@ -81,4 +92,10 @@ export async function fetchCardData() {
     paidInvoice,
     pendingInvoice,
   }
+}
+
+export async function fetchCustomers() {
+  return prisma.customers.findMany({
+    select: { id:true, name:true }
+  });
 }

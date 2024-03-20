@@ -1,3 +1,4 @@
+import { ReadonlyURLSearchParams } from 'next/navigation';
 import { Revenue } from './definitions';
 
 export const formatCurrency = (amount: number) => {
@@ -67,3 +68,9 @@ export const generatePagination = (currentPage: number, totalPages: number) => {
     totalPages,
   ];
 };
+
+export const createPageURL = (pathname: string, pageNumber:number, searchParams: ReadonlyURLSearchParams) => {
+  const params = new URLSearchParams(searchParams);
+  params.set('page', pageNumber.toString());
+  return `${pathname}?${params.toString()}`;
+}
