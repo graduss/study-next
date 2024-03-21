@@ -13,7 +13,7 @@ export type User = {
 export type Customer = {
   name: string;
   email: string;
-  image_url: string;
+  imageUrl: string;
 };
 
 export enum InvoiceStatus {
@@ -49,7 +49,7 @@ export type InvoicesTable = {
   customer_id: string;
   name: string;
   email: string;
-  image_url: string;
+  imageUrl: string;
   date: string;
   amount: number;
   status: 'pending' | 'paid';
@@ -82,7 +82,7 @@ export type CustomerField = {
 
 export type InvoiceForm = {
   id: string;
-  customer_id: string;
+  customerId: string;
   amount: number;
   status: 'pending' | 'paid';
 };

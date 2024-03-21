@@ -23,7 +23,7 @@ async function seedUsers(client: PrismaClient) {
 async function seedInvoices(client:PrismaClient) {
   try {
     await Promise.all(
-      invoices.map( async (invoice) => client.invoices.create({data: { ...invoice, date: (new Date(invoice.date)).toISOString() } }))
+      invoices.map( async (invoice) => client.invoice.create({data: { ...invoice, date: (new Date(invoice.date)).toISOString() } }))
     )
   } catch (error) {
     console.error('Error seeding users:', error);
@@ -34,7 +34,7 @@ async function seedInvoices(client:PrismaClient) {
 async function seedCustomers(client:PrismaClient) {
   try {
     await Promise.all(
-      customers.map( async (customer) => client.customers.create({data: { ...customer } }))
+      customers.map( async (customer) => client.customer.create({data: { ...customer } }))
     )
   } catch (error) {
     console.error('Error seeding users:', error);

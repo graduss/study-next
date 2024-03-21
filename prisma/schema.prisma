@@ -18,29 +18,37 @@ model User {
   name String @db.VarChar(255)
   email String @unique @db.VarChar(255)
   password String @db.VarChar(255)
+
+  @@map("users")
 }
 
-model Invoices {
+model Invoice {
   id  String @id @default(uuid()) @db.Uuid
-  customer_id String @db.Uuid()
+  customerId String @db.Uuid() @map("customer_id")
   amount Int
   status String @db.VarChar(255)
   date DateTime @db.Date
-  customer Customers @relation(fields: [customer_id], references: [id])
+  customer Customer @relation(fields: [customerId], references: [id])
+
+  @@map("invoices")
 }
 
-model Customers {
+model Customer {
   id  String @id @default(uuid()) @db.Uuid
   name String @db.VarChar(255)
-  email String @db.VarChar(255)
-  image_url String @db.VarChar(255)
-  invoices Invoices[]
+  email String @unique @db.VarChar(255)
+  imageUrl String @db.VarChar(255) @map("image_url")
+  invoices Invoice[]
+
+  @@map("customers")
 }
 
 model Revenue {
   id String @id @default(uuid()) @db.Uuid
   month String @db.VarChar(4)
   revenue Int
+
+  @@map("revenues")
 }
 
 
